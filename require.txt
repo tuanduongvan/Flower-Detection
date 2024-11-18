@@ -1,0 +1,9 @@
+Thiết lập môi trường ảo cho dự án
+  => python -m venv tên_môi_trường
+Các thư viện cần thiết cho dự án
+  => pip install 'name'
+  - django
+  - opencv-python
+  - tensorflow
+  - numpy
+  - Pillow
