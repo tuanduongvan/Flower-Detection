@@ -93,6 +93,7 @@ def main(request):
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
 
+
             image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
             _, buffer = cv2.imencode('.jpg', image_np)
             result_image = base64.b64encode(buffer).decode('utf-8')
@@ -104,80 +105,3 @@ def main(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-# interpreter = tf.lite.Interpreter(model_path='D:/test/Flower (1)/webapp/detect.tflite')
-# interpreter.allocate_tensors()
-
-# input_details = interpreter.get_input_details()
-# output_details = interpreter.get_output_details()
-
-# CAMERA_WIDTH = 640
-# CAMERA_HEIGHT = 480
-
-# labels = {1: 'hello'}  # Thay thế các nhãn theo mô hình của bạn
-
-
-# def set_input_tensor(interpreter, image):
-#     """Sets the input tensor."""
-#     tensor_index = input_details[0]['index']
-#     input_tensor = interpreter.tensor(tensor_index)()[0]
-#     input_tensor[:, :] = np.expand_dims((image - 255) / 255, axis=0)
-
-# def detect_objects(interpreter, image, threshold=0.5):
-#     """Runs inference and returns a list of detection results."""
-#     set_input_tensor(interpreter, image)
-#     interpreter.invoke()
-
-#     # Get output tensors
-#     boxes = np.squeeze(interpreter.get_tensor(output_details[0]['index']))
-#     classes = np.squeeze(interpreter.get_tensor(output_details[1]['index']))
-#     scores = np.squeeze(interpreter.get_tensor(output_details[2]['index']))
-#     count = int(interpreter.get_tensor(output_details[3]['index']))
-
-#     results = []
-#     for i in range(count):
-#         if scores[i] >= threshold:
-#             results.append({
-#                 'bounding_box': boxes[i],
-#                 'class_id': int(classes[i]),
-#                 'score': scores[i]
-#             })
-#     return results
-
-# def capture_and_detect(request):
-#     # Capture a frame from the camera
-#     cap = cv2.VideoCapture(0)
-#     ret, frame = cap.read()
-#     #cv2.imshow('Video từ Webcam', frame)
-#     cap.release()
-
-#     if not ret:
-#         return HttpResponse("Failed to capture image", status=500)
-
-#     # Preprocess image
-#     image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#     input_image = cv2.resize(image_rgb, (input_details[0]['shape'][2], input_details[0]['shape'][1]))
-
-#     # Run detection
-#     results = detect_objects(interpreter, input_image)
-
-#     # Draw results on the image
-#     for result in results:
-#         ymin, xmin, ymax, xmax = result['bounding_box']
-#         xmin = int(max(1, xmin * CAMERA_WIDTH))
-#         xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
-#         ymin = int(max(1, ymin * CAMERA_HEIGHT))
-#         ymax = int(min(CAMERA_HEIGHT, ymax * CAMERA_HEIGHT))
-#         class_id = result['class_id']
-#         label_name = labels.get(class_id, 'unknown')  # Lấy nhãn, 'unknown' nếu không có
-
-#         label = f"{label_name}: {result['score']:.2f}"
-
-#         cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-#         cv2.putText(frame, label, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
-#     # Convert image to JPEG format for display
-#     _, buffer = cv2.imencode('.jpg', frame)
-#     img_bytes = buffer.tobytes()
-
-#     # Return image in HTTP response
-#     return HttpResponse(img_bytes, content_type='image/jpeg')
