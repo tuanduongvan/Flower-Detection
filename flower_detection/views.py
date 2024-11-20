@@ -92,6 +92,8 @@ def main(request):
                             (xmin, min(ymax, CAMERA_HEIGHT - 20)),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
+
+            image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
             _, buffer = cv2.imencode('.jpg', image_np)
             result_image = base64.b64encode(buffer).decode('utf-8')
             return JsonResponse({'image': result_image})
