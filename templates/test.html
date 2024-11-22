@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower List</title>
+</head>
+<body>
+    <h1>Flower List</h1>
+    <ul>
+        {% for flower in flowers %}
+            <li>
+                <strong>Name:</strong> {{ flower.name }} <br>
+                <strong>Full Name:</strong> {{ flower.fullname }} <br>
+                <strong>Scientific Name:</strong> {{ flower.scientific_name }} <br>
+                <strong>Characteristic:</strong> {{ flower.characteristic }} <br>
+                <strong>Image Path:</strong> {{ flower.image }} <br>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -6,6 +6,7 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 from io import BytesIO
+from .models import Flower
 
 # Create your views here.
 def indext(request):
@@ -70,7 +71,7 @@ def main(request):
                 image = image.convert('RGB')
                 image_np = np.array(image)
 
-            interpreter = tf.lite.Interpreter(model_path='D:/test/Flower (1)/webapp/detect.tflite')
+            interpreter = tf.lite.Interpreter(model_path='C:/Users/PC/Desktop/AI project/PBL4_flower/Flower-Detection/detect.tflite')
             interpreter.allocate_tensors()
 
             img = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
@@ -105,3 +106,6 @@ def main(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+def test(request):
+    flowers = Flower.objects.all()
+    return render(request, 'test.html', {'flowers': flowers})
