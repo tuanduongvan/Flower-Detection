@@ -1,5 +1,28 @@
-<h2>Capture Image</h2>
-<form method="POST" action="video_on_web">
-    {% csrf_token %}
-    <button type="submit">Scan</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
+</head>
+<body>
+    <div class="header">
+        <a href="">Home</a>
+        <a href="">Flowers</a>
+        <a href="">About</a>
+    </div>
+    <div class="container">
+        <div class="content">
+            <h2>Capture Image</h2>
+            <p>Want to learn more about flowers? Click the scan button to let the flower identification application tell you exactly what kind of flower it is, including information about its name, species, habitat, and how to grow it.</p>
+            <form method="POST" action="video_on_web">
+                {% csrf_token %}
+                <button class="comic-button" type="submit">Scan</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

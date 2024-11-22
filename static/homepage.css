@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: center; /* Căn giữa các thẻ a theo chiều ngang */
+    align-items: center;    /* Căn giữa theo chiều dọc */
+    height: 50px;
+    /* background-color: #B75279;  */
+    background-color: #e47272; 
+  }
+  
+  .header a {
+    color: white;
+    text-decoration: none;
+    padding: 0 15px;
+    font-size: 20px;
+    transition: color 0.3s, transform 0.3s; /* Hiệu ứng khi hover */
+    font-family:monospace;
+  }
+  
+  .header a:hover {
+    color: #ff9800;  /* Đổi màu khi hover */
+    transform: scale(1.1); /* Phóng to nhẹ khi hover */
+  }  
+
+.container{   
+    background-image: url(./image/home-hero.jpg);
+    background-position: center center;
+    background-size: cover;
+    padding: 175px 0px 172px 0px;
+    height: 50vh;
+}
+.content{
+    margin-left: 20%;
+}
+.content h2{
+    font-size: 45px;
+    font-family: monospace;
+    margin-bottom: -10px;
+}
+.content p{
+    font-size: 20px;
+    font-family: cursive;
+    width: 30%;
+}
+
+.comic-button {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 10px 30px;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #ff5252;
+    border: 2px solid #000;
+    border-radius: 10px;
+    box-shadow: 5px 5px 0px #000;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .comic-button:hover {
+    background-color: #fff;
+    color: #ff5252;
+    border: 2px solid #ff5252;
+    box-shadow: 5px 5px 0px #ff5252;
+  }
+  
+  .comic-button:active {
+    background-color: #fcf414;
+    box-shadow: none;
+    transform: translateY(4px);
+  }
+  

@@ -31,7 +31,7 @@
         }
 
         // Thiết lập camera để chụp ảnh
-        navigator.mediaDevices.getUserMedia({video: { width: 640, height: 480 }})
+        navigator.mediaDevices.getUserMedia({video: { width: 640, height: 480, facingMode: 'user' }})
         .then(stream => {
             video.srcObject = stream;
         }).catch(console.error);
@@ -63,3 +63,5 @@
     </script>
 </body>
 </html>
+
+/////
