@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
     <title>Thông Tin Chi Tiết Hoa</title>
     <style>
         body {
@@ -101,7 +102,7 @@
     <div class="container">
         <div class="image-container">
             {% if flower.image %}
-                <img src="{{ flower.image }}" alt="{{ flower.name }}">
+            <img src="{% static 'image/' %}{{ flower.image }}" alt="{{ flower.name }}">
             {% endif %}
         </div>
         <div class="info-container">

@@ -83,7 +83,8 @@ def main(request):
                 image = image.convert('RGB')
                 image_np = np.array(image)
 
-            interpreter = tf.lite.Interpreter(model_path='D:/test/Flower (1)/webapp/detect.tflite')
+            interpreter = tf.lite.Interpreter(model_path='C:\\Users\\PC\Desktop\\AI project\\PBL4_flower\\Flower-Detection\\detect.tflite')
+            # interpreter = tf.lite.Interpreter(model_path='D:/test/Flower (1)/webapp/detect.tflite')
             interpreter.allocate_tensors()
 
             img = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
