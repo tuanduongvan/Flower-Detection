@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 import cv2
+import re
 import base64, json, logging
 import numpy as np
 import tensorflow as tf
@@ -22,7 +23,18 @@ def video_on_web(request):
 CAMERA_WIDTH = 640
 CAMERA_HEIGHT = 480
 
-labels = { 0 : 'hello'}
+def load_labels(path='labels.txt'):
+    """Loads the labels file. Supports files with or without index numbers."""
+    with open(path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        labels = {}
+        for row_number, content in enumerate(lines):
+            content = content.strip()
+            if content:
+                labels[row_number] = content
+    return labels
+
+# labels = {0: 'hoa su', 1: 'hoa hong', 2: 'van tho', 3: 'hoa dam but', 4: 'hoa sen', 5: 'hoa giay'}
 
 def set_input_tensor(interpreter, image):
     """Sets the input tensor."""
@@ -40,10 +52,11 @@ def detect_objects(interpreter, image, threshold):
     set_input_tensor(interpreter, image)
     interpreter.invoke()
     # Get all output details
-    boxes = get_output_tensor(interpreter, 0)
-    classes = get_output_tensor(interpreter, 1)
-    scores = get_output_tensor(interpreter, 2)
-    count = int(get_output_tensor(interpreter, 3))
+    scores = get_output_tensor(interpreter, 0)
+    count = int(get_output_tensor(interpreter, 2))
+    boxes = get_output_tensor(interpreter, 1)
+    classes = get_output_tensor(interpreter, 3)
+    print(classes)
 
     results = []
     for i in range(count):
@@ -71,16 +84,20 @@ def main(request):
                 image = image.convert('RGB')
                 image_np = np.array(image)
 
-            interpreter = tf.lite.Interpreter(model_path='C:/Users/PC/Desktop/AI project/PBL4_flower/Flower-Detection/detect.tflite')
+            interpreter = tf.lite.Interpreter(model_path='D:/test/Flower (1)/webapp/detect.tflite')
             interpreter.allocate_tensors()
 
             img = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
             img = cv2.resize(img, (320, 320))
-            res = detect_objects(interpreter, img, 0.1)
+            res = detect_objects(interpreter, img, 0.5)
             print(res)
+
+            labels = load_labels()
+            print(labels)
 
             for result in res:
                 ymin, xmin, ymax, xmax = result['bounding_box']
+                print(ymin, xmin, ymax, xmax)
                 xmin = int(max(1, xmin * CAMERA_WIDTH))
                 xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
                 ymin = int(max(1, ymin * CAMERA_HEIGHT))
