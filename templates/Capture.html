@@ -4,64 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nhận Diện Hoa</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'capture.css' %}">
 </head>
 <body>
-    <h1>Capture live photo</h1>
-    <video id="video" width="640" height="480" autoplay></video>
-    <button id="snap">Take Snapshot</button>
-    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas> <!-- Đảm bảo kích thước 150x150 -->
-    <h2>Result</h2>
-    <img id="result" alt="Result will appear here">
+    <div class="container">
+        <div class="video-container">
+            <h1 class="title">Capture Live Photo</h1>
+            <video id="video" class="video" autoplay></video>
+            <button id="snap" class="comic-button">Take Snapshot</button>
+        </div>
+
+        <div class="result-container">
+            <h2 class="title">Result</h2>
+            <img id="result" class="result-image" src="{% static 'image/default.png' %}" alt="Default Image">
+            <div id="result-list" class="result-list">
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
 
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const snapButton = document.getElementById('snap');
         const resultImage = document.getElementById('result');
+        const resultList = document.getElementById('result-list');
+
+        // Lấy CSRF token từ cookie (nếu có)
         function getCsrfToken() {
-            let csrfToken = null;
             const cookies = document.cookie.split(';');
-            cookies.forEach(cookie => {
+            for (const cookie of cookies) {
                 const [name, value] = cookie.trim().split('=');
                 if (name === 'csrftoken') {
-                    csrfToken = value;
+                    return value;
                 }
-            });
-            return csrfToken;
+            }
+            return null;
         }
 
-        // Thiết lập camera để chụp ảnh
-        navigator.mediaDevices.getUserMedia({video: { width: 640, height: 480, facingMode: 'user' }})
-        .then(stream => {
-            video.srcObject = stream;
-        }).catch(console.error);
+        // Thiết lập camera để hiển thị video trực tiếp
+        navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                console.error('Error accessing camera:', error);
+                alert('Unable to access the camera. Please check permissions.');
+            });
 
+        // Xử lý sự kiện chụp ảnh
         snapButton.addEventListener('click', () => {
             const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Chuyển ảnh sang định dạng JPEG và gửi đi
-            const dataUrl = canvas.toDataURL('image/jpg'); // Đảm bảo định dạng JPEG
+            // Chuyển đổi ảnh từ canvas sang Base64
+            const dataUrl = canvas.toDataURL('image/jpeg');
             const base64Image = dataUrl.split(',')[1];
 
             const csrfToken = getCsrfToken();
 
+            // Gửi ảnh đến server
             fetch('http://127.0.0.1:8000/detect', {
                 method: 'POST',
-                headers: {  
+                headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({ image: base64Image })
             })
-            .then(response => response.json())
-            .then(data => {
-                resultImage.src = 'data:image/jpeg;base64,' + data.image;
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                return response.json();
             })
-            .catch(console.error);
+            .then(data => {
+                // Hiển thị ảnh kết quả
+                if (data.image) {
+                    resultImage.src = 'data:image/jpeg;base64,' + data.image;
+                } else {
+                    // Nếu không có kết quả, hiển thị ảnh mặc định
+                    resultImage.src = '{% static "image/default.png" %}';
+                }
+
+                // Xóa các kết quả cũ
+                resultList.innerHTML = '';
+
+                // Hiển thị danh sách kết quả (nếu có)
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(result => {
+                        const link = document.createElement('a');
+                        link.href = result.link || '#'; // Đặt liên kết nếu có
+                        link.innerText = `${result.label} (${(result.score * 100).toFixed(2)}%)`;
+                        link.className = 'detail-btn';
+                        resultList.appendChild(link);
+                    });
+                } else {
+                    const message = document.createElement('p');
+                    message.innerText = '';
+                    message.className = 'no-result';
+                    resultList.appendChild(message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing the image. Please try again.');
+            });
         });
     </script>
 </body>
 </html>
-
-/////

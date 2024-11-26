@@ -8,6 +8,7 @@ import tensorflow as tf
 from PIL import Image
 from io import BytesIO
 from .models import Flower
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 def indext(request):
@@ -73,13 +74,11 @@ def main(request):
     if request.method == 'POST':
         try:
             json_data = json.loads(request.body)
-
             base64_image = json_data['image']
             image_data = base64.b64decode(base64_image)  # giải mã ảnh base64 thành dữ liệu nhị phân
             image = Image.open(BytesIO(image_data))
 
             image_np = np.array(image)
-
             if image.mode != 'RGB':
                 image = image.convert('RGB')
                 image_np = np.array(image)
@@ -90,14 +89,18 @@ def main(request):
             img = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
             img = cv2.resize(img, (320, 320))
             res = detect_objects(interpreter, img, 0.5)
-            print(res)
+
+            CAMERA_WIDTH = image_np.shape[1]
+            CAMERA_HEIGHT = image_np.shape[0]
+
+            # Danh sách các kết quả để gửi về client
+            results_list = []
 
             labels = load_labels()
             print(labels)
 
             for result in res:
                 ymin, xmin, ymax, xmax = result['bounding_box']
-                print(ymin, xmin, ymax, xmax)
                 xmin = int(max(1, xmin * CAMERA_WIDTH))
                 xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
                 ymin = int(max(1, ymin * CAMERA_HEIGHT))
@@ -105,17 +108,29 @@ def main(request):
 
                 confidence_score = result['score']
 
+                # Vẽ bounding box và label lên ảnh
                 cv2.rectangle(image_np, (xmin, ymin), (xmax, ymax), (0, 255, 0), 3)
                 cv2.putText(image_np, f"{labels[int(result['class_id'])]}: {confidence_score:.2f}", 
                             (xmin, min(ymax, CAMERA_HEIGHT - 20)),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
+                # Thêm thông tin thẻ a vào kết quả
+                results_list.append({
+                    'label': labels[int(result['class_id'])],
+                    'score': confidence_score,
+                    'link': f"/flower/{int(result['class_id'])}"
+                })
 
-
+            # Mã hóa ảnh trả về
             image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
             _, buffer = cv2.imencode('.jpg', image_np)
             result_image = base64.b64encode(buffer).decode('utf-8')
-            return JsonResponse({'image': result_image})
+
+            # Trả về ảnh và danh sách các thẻ a
+            return JsonResponse({
+                'image': result_image,
+                'results': results_list
+            })
 
         except Exception as e:
             logging.error(f"Error occurred: {str(e)}")
@@ -123,6 +138,6 @@ def main(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-def test(request):
-    flowers = Flower.objects.all()
-    return render(request, 'test.html', {'flowers': flowers})
+def flower_detail(request, id):
+    flower = get_object_or_404(Flower, id=id)
+    return render(request, 'flower_detail.html', {'flower': flower})
