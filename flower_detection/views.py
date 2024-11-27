@@ -57,7 +57,6 @@ def detect_objects(interpreter, image, threshold):
     count = int(get_output_tensor(interpreter, 2))
     boxes = get_output_tensor(interpreter, 1)
     classes = get_output_tensor(interpreter, 3)
-    print(classes)
 
     results = []
     for i in range(count):
@@ -90,6 +89,7 @@ def main(request):
             img = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
             img = cv2.resize(img, (320, 320))
             res = detect_objects(interpreter, img, 0.5)
+            print(res)
 
             CAMERA_WIDTH = image_np.shape[1]
             CAMERA_HEIGHT = image_np.shape[0]
@@ -100,7 +100,20 @@ def main(request):
             labels = load_labels()
             print(labels)
 
+            # Tạo dictionary để lưu giữ kết quả tốt nhất cho mỗi class_id
+            best_results = {}
+
+            # Lọc các kết quả có score cao nhất cho mỗi class_id
             for result in res:
+                class_id = result['class_id']
+                if class_id not in best_results or result['score'] > best_results[class_id]['score']:
+                    best_results[class_id] = result
+
+            # Chuyển dictionary thành danh sách kết quả đã lọc
+            filtered_res = list(best_results.values())
+            print(filtered_res)
+
+            for result in filtered_res:
                 ymin, xmin, ymax, xmax = result['bounding_box']
                 xmin = int(max(1, xmin * CAMERA_WIDTH))
                 xmax = int(min(CAMERA_WIDTH, xmax * CAMERA_WIDTH))
