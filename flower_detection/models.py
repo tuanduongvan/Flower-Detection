@@ -16,12 +16,13 @@ class SearchHistory(models.Model):
     id = models.AutoField(primary_key=True) 
     linkflower = models.TextField(max_length=255, null=True, blank=True)
     image = models.TextField(max_length=255, null=True, blank=True)  # Ảnh được lưu trữ (nếu có)
-    time = models.DateTimeField(default=now)  # Thời gian tìm kiếm, mặc định là thời điểm hiện tại
+    time = models.DateField(default=now)  # Thời gian tìm kiếm, mặc định là thời điểm hiện tại
 
     def __str__(self):
         return f"Search for {self.id} at {self.time}"
 
     def define(self, ht):
+        self.id = ht.id
         self.linkflower = ht.linkflower
         self.image = ht.image
         self.time = ht.time

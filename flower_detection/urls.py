@@ -7,4 +7,5 @@ urlpatterns = [
     path('detect', views.main, name='detect'),
     path('video_on_web', views.video_on_web, name='video_on_web'),
     path('flower/<int:id>/', views.flower_detail, name='flower_detail'),
+    path('history', views.History, name='history'),
 ]

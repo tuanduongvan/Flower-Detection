@@ -27,7 +27,7 @@ CAMERA_HEIGHT = 480
 
 finalhistory = SearchHistory()
 
-def load_labels(path='labels.txt'):
+def load_labels(path):
     """Loads the labels file. Supports files with or without index numbers."""
     with open(path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -100,7 +100,7 @@ def main(request):
             # Danh sách các kết quả để gửi về client
             results_list = []
 
-            labels = load_labels()
+            labels = load_labels('labels.txt')
             print(labels)
 
             # Tạo dictionary để lưu giữ kết quả tốt nhất cho mỗi class_id
@@ -143,10 +143,12 @@ def main(request):
             _, buffer = cv2.imencode('.jpg', image_np)
             result_image = base64.b64encode(buffer).decode('utf-8')
 
+            label = load_labels('label1.txt')
+
             if(filtered_res):
                 link_flower = ''
                 for result in filtered_res:
-                    link = f'<a href="/flower/{int(result["class_id"])}"> {labels[int(result["class_id"])]} </a>'
+                    link = f'<a href="/flower/{int(result["class_id"])}"  class="info-button" > {label[int(result["class_id"])]} </a>'
                     link_flower += link
                 history = SearchHistory(
                     linkflower = link_flower,
@@ -172,3 +174,7 @@ def flower_detail(request, id):
     flower = get_object_or_404(Flower, id=id)
     finalhistory.save()
     return render(request, 'flower_detail.html', {'flower': flower})
+
+def History(request):
+    list_history = SearchHistory.objects.all().order_by('-id')
+    return render(request, 'histori.html', {'list_history': list_history})
