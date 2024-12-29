@@ -7,7 +7,8 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 from io import BytesIO
-from .models import Flower
+from .models import Flower, SearchHistory
+from django.utils.timezone import now
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -23,6 +24,8 @@ def video_on_web(request):
 
 CAMERA_WIDTH = 640
 CAMERA_HEIGHT = 480
+
+finalhistory = SearchHistory()
 
 def load_labels(path='labels.txt'):
     """Loads the labels file. Supports files with or without index numbers."""
@@ -140,6 +143,19 @@ def main(request):
             _, buffer = cv2.imencode('.jpg', image_np)
             result_image = base64.b64encode(buffer).decode('utf-8')
 
+            if(filtered_res):
+                link_flower = ''
+                for result in filtered_res:
+                    link = f'<a href="/flower/{int(result["class_id"])}"> {labels[int(result["class_id"])]} </a>'
+                    link_flower += link
+                history = SearchHistory(
+                    linkflower = link_flower,
+                    image = result_image,
+                    time = now() 
+                )
+                global finalhistory
+                finalhistory.define(history)
+
             # Trả về ảnh và danh sách các thẻ a
             return JsonResponse({
                 'image': result_image,
@@ -154,4 +170,5 @@ def main(request):
 
 def flower_detail(request, id):
     flower = get_object_or_404(Flower, id=id)
+    finalhistory.save()
     return render(request, 'flower_detail.html', {'flower': flower})

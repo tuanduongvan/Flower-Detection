@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 
 class Flower(models.Model):
     name = models.CharField(max_length=255)
@@ -10,4 +11,19 @@ class Flower(models.Model):
     def __str__(self):
         return self.name
 
+
+class SearchHistory(models.Model):
+    id = models.AutoField(primary_key=True) 
+    linkflower = models.TextField(max_length=255, null=True, blank=True)
+    image = models.TextField(max_length=255, null=True, blank=True)  # Ảnh được lưu trữ (nếu có)
+    time = models.DateTimeField(default=now)  # Thời gian tìm kiếm, mặc định là thời điểm hiện tại
+
+    def __str__(self):
+        return f"Search for {self.id} at {self.time}"
+
+    def define(self, ht):
+        self.linkflower = ht.linkflower
+        self.image = ht.image
+        self.time = ht.time
+        return self
 # Create your models here.
