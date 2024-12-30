@@ -8,4 +8,5 @@ urlpatterns = [
     path('video_on_web', views.video_on_web, name='video_on_web'),
     path('flower/<int:id>/', views.flower_detail, name='flower_detail'),
     path('history', views.History, name='history'),
+    path('about', views.About, name='about'),
 ]

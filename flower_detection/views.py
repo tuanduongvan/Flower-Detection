@@ -178,3 +178,6 @@ def flower_detail(request, id):
 def History(request):
     list_history = SearchHistory.objects.all().order_by('-id')
     return render(request, 'histori.html', {'list_history': list_history})
+
+def About(request):
+    return render(request, 'about.html')
