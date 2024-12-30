@@ -9,4 +9,5 @@ urlpatterns = [
     path('flower/<int:id>/', views.flower_detail, name='flower_detail'),
     path('flower_modal/<int:id>/', views.flower_modal, name='flower_modal'),
     path('history', views.History, name='history'),
+    path('about', views.About, name='about'),
 ]

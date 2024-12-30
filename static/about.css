@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.team {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.member {
+    width: 22%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.member:hover {
+    transform: translateY(-10px);
+}
+
+.member .image {
+    width: 150px; /* Đặt kích thước cụ thể cho ảnh */
+    height: 150px; /* Chiều cao bằng chiều rộng để giữ tỉ lệ hình tròn */
+    overflow: hidden; /* Ẩn các phần vượt ra ngoài khung */
+    margin: 0 auto 15px; /* Căn giữa và thêm khoảng cách phía dưới */
+    border-radius: 50%; /* Biến khung ảnh thành hình tròn */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng cho ảnh */
+}
+
+.member .image img {
+    width: 100%; /* Ảnh chiếm toàn bộ khung hình */
+}
+
+.info h2 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.info p {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.social-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #3b5998;
+    color: white;
+    text-decoration: none;
+    border-radius: 50%; /* Để tạo hình tròn */
+    font-size: 1.5em;
+    width: 50px; /* Đặt chiều rộng của icon */
+    height: 50px; /* Đặt chiều cao của icon */
+    justify-content: center;
+    align-items: center;
+}
+
+.social-link i {
+    margin: 0; /* Loại bỏ khoảng cách xung quanh biểu tượng */
+}
+
+.social-link:hover {
+    background-color: #2d4373;
+}
+
+
+@media (max-width: 768px) {
+    .team {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .member {
+        width: 80%;
+        margin-bottom: 20px;
+    }
+}
+
+.back-home {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-back-home {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff; /* Màu nền xanh */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    transition: all 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Bóng nút */
+}
+
+.btn-back-home:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Tăng bóng khi hover */
+    transform: translateY(-2px); /* Hiệu ứng nút "nhô lên" */
+}
+
