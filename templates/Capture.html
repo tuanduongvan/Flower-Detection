@@ -84,6 +84,7 @@
                 <div class="info-container">
                     <h1 id="flowerName"></h1>
                     <h2 id="flowerScientificName"></h2>
+                    <h2 id="flowerResidence"></h2>
                     <p id="flowerDescription"></p>
                 </div>
             </div>
@@ -221,7 +222,8 @@
                             // Hiển thị thông tin hoa trong modal
                             document.getElementById('flowerImage').src = `/static/image/${data.image}`;
                             document.getElementById('flowerName').innerText = data.fullname;
-                            document.getElementById('flowerScientificName').innerText = `Scientific Name: ${data.scientific_name}`;
+                            document.getElementById('flowerScientificName').innerText = `Tên khoa học: ${data.scientific_name}`;
+                            document.getElementById('flowerResidence').innerText = `Nơi sinh sống: ${data.residence}`;
                             document.getElementById('flowerDescription').innerText = data.characteristic;
         
                             // Hiển thị modal
