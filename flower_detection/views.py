@@ -172,8 +172,24 @@ def main(request):
 
 def flower_detail(request, id):
     flower = get_object_or_404(Flower, id=id)
-    finalhistory.save()
+    #test
+    if finalhistory.image:
+        finalhistory.save()
     return render(request, 'flower_detail.html', {'flower': flower})
+
+def flower_modal(request, id):
+    try:
+        flower = get_object_or_404(Flower, id=id)
+        finalhistory.save()
+        return JsonResponse({
+            'fullname': flower.fullname,
+            'scientific_name': flower.scientific_name,
+            'residence': flower.residence,
+            'characteristic': flower.characteristic,
+            'image': flower.image if flower.image else 'default.png'
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 def History(request):
     list_history = SearchHistory.objects.all().order_by('-id')
